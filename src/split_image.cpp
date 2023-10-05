@@ -1,6 +1,7 @@
 #include <string>
 #include <string_view>
 #include "rclcpp/rclcpp.hpp"
+#include "std_msgs/msg/header.hpp"
 #include "sensor_msgs/msg/image.hpp"
 #include "sensor_msgs/msg/camera_info.hpp"
 #include "cv_bridge/cv_bridge.h"
@@ -23,14 +24,23 @@ public:
           rclcpp::QoS {10}.get_rmw_qos_profile()
         )
     );
-    // sub_raw_ = create_subscription<sensor_msgs::msg::Image>(
-    //   "image_raw",
-    //   10,
-    //   std::bind(&ImgSplitter::raw_callback, this, std::placeholders::_1)
-    // );
 
-    RCLCPP_INFO_STREAM(get_logger(), "img_subscriber node started");
+    //Publishers
+    pub_raw_left_ = std::make_shared<image_transport::CameraPublisher>(
+        image_transport::create_camera_publisher(
+          this,
+          "image_raw/left",
+          rclcpp::QoS {10}.get_rmw_qos_profile()
+        )
+      );
 
+    pub_raw_right_ = std::make_shared<image_transport::CameraPublisher>(
+        image_transport::create_camera_publisher(
+          this,
+          "image_raw/right",
+          rclcpp::QoS {10}.get_rmw_qos_profile()
+        )
+      );
   }
 
   //Destroy windows
@@ -41,7 +51,8 @@ public:
 
 private:
   std::shared_ptr<image_transport::CameraSubscriber> sub_raw_;
-    // rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr sub_raw_;
+  std::shared_ptr<image_transport::CameraPublisher> pub_raw_left_;
+  std::shared_ptr<image_transport::CameraPublisher> pub_raw_right_;
 
   void raw_callback(
     const sensor_msgs::msg::Image::ConstSharedPtr& img,
@@ -57,6 +68,15 @@ private:
     show_img("Whole", cv_ptr->image);
     show_img("left", left);
     show_img("right", right);
+    std_msgs::msg::Header header;
+    header.stamp = get_clock()->now();
+    // for now camera info still blank
+    sensor_msgs::msg::CameraInfo camera_info_;
+    camera_info_.header = header;
+    const auto msg_left = cv_bridge::CvImage(header, "bgr8", left).toImageMsg();
+    pub_raw_left_->publish(*msg_left, camera_info_);
+    const auto msg_right = cv_bridge::CvImage(header, "bgr8", right).toImageMsg();
+    pub_raw_left_->publish(*msg_right, camera_info_);
   }
 
   void show_img(const std::string name, const cv::Mat img){
