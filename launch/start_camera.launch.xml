@@ -7,7 +7,7 @@
 		<param name="pixel_format" value="mjpeg2rgb"/>
 	</node>
 
-	<node pkg='stream_camera' exec='split_image'>
+	<!-- <node pkg='stream_camera' exec='split_image'>
 		<param name="display_images" value="false"/>
-	</node>
+	</node> -->
 </launch>
