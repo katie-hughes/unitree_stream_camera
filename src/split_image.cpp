@@ -14,6 +14,11 @@ public:
   ImgSplitter()
   : Node("img_splitter")
   {
+
+    // parameters
+    declare_parameter("display_images", false);
+    display_images = get_parameter("display_images").as_bool();
+    RCLCPP_INFO_STREAM(get_logger(), "Displaying Images: " << display_images);
     //Subscribers
     sub_raw_ = std::make_shared<image_transport::CameraSubscriber>(
         image_transport::create_camera_subscription(
@@ -29,7 +34,7 @@ public:
     pub_raw_left_ = std::make_shared<image_transport::CameraPublisher>(
         image_transport::create_camera_publisher(
           this,
-          "image_raw/left",
+          "/left/image_raw",
           rclcpp::QoS {10}.get_rmw_qos_profile()
         )
       );
@@ -37,7 +42,7 @@ public:
     pub_raw_right_ = std::make_shared<image_transport::CameraPublisher>(
         image_transport::create_camera_publisher(
           this,
-          "image_raw/right",
+          "/right/image_raw",
           rclcpp::QoS {10}.get_rmw_qos_profile()
         )
       );
@@ -50,6 +55,7 @@ public:
   }
 
 private:
+  bool display_images;
   std::shared_ptr<image_transport::CameraSubscriber> sub_raw_;
   std::shared_ptr<image_transport::CameraPublisher> pub_raw_left_;
   std::shared_ptr<image_transport::CameraPublisher> pub_raw_right_;
@@ -65,9 +71,11 @@ private:
     // corner x, corner y, width, height
     const cv::Mat left = cv_ptr->image(cv::Rect(0, 0, 0.5*w, h)).clone();
     const cv::Mat right = cv_ptr->image(cv::Rect(0.5*w, 0, 0.5*w, h)).clone();
-    show_img("Whole", cv_ptr->image);
-    show_img("left", left);
-    show_img("right", right);
+    if (display_images){
+      show_img("Whole", cv_ptr->image);
+      show_img("left", left);
+      show_img("right", right);
+    }
     std_msgs::msg::Header header;
     header.stamp = get_clock()->now();
     // for now camera info still blank
@@ -84,7 +92,6 @@ private:
     cv::imshow(name, img);
     cv::waitKey(1);
   }
-
 
 };
 
