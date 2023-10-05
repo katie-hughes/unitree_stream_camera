@@ -47,23 +47,16 @@ private:
     const sensor_msgs::msg::Image::ConstSharedPtr& img,
     const sensor_msgs::msg::CameraInfo::ConstSharedPtr&
   ) {
-    // RCLCPP_INFO_STREAM(get_logger(), "received image");
-    const cv_bridge::CvImagePtr cv_ptr = cv_bridge::toCvCopy(*img, img->encoding);
+    // img->encoding gives rgb8 but it really is bgr8
+    const cv_bridge::CvImagePtr cv_ptr = cv_bridge::toCvCopy(*img, "bgr8");
     const auto w = cv_ptr->image.size().width;
     const auto h = cv_ptr->image.size().height;
-    // corner, corner, width, height
+    // corner x, corner y, width, height
     const cv::Mat left = cv_ptr->image(cv::Rect(0, 0, 0.5*w, h)).clone();
     const cv::Mat right = cv_ptr->image(cv::Rect(0.5*w, 0, 0.5*w, h)).clone();
     show_img("Whole", cv_ptr->image);
     show_img("left", left);
     show_img("right", right);
-    // const std::string left_name = "left";
-    // const std::string right_name = "right";
-    // cv::namedWindow(right_name);
-    // cv::imshow(right_name, right);
-    // cv::namedWindow(left_name);
-    // cv::imshow(left_name, left);
-    // cv::waitKey(1);
   }
 
   void show_img(const std::string name, const cv::Mat img){
