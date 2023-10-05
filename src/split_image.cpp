@@ -20,7 +20,7 @@ public:
         image_transport::create_camera_subscription(
           this,
           "image_raw",
-          std::bind(&ImgSubscriber::raw_callback, this, std::placeholders::_1, std::placeholders::_2),
+          std::bind(&ImgSplitter::raw_callback, this, std::placeholders::_1, std::placeholders::_2),
           "compressed",
           rclcpp::QoS {10}.get_rmw_qos_profile()
         )

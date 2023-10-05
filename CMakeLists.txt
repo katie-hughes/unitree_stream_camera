@@ -11,13 +11,30 @@ find_package(ament_cmake REQUIRED)
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
 find_package(rclcpp REQUIRED)
+
+find_package(std_msgs REQUIRED)
+find_package(std_srvs REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(cv_bridge REQUIRED)
+find_package(image_transport REQUIRED)
+
 find_package(usb_cam REQUIRED)
 
+find_package(OpenCV REQUIRED)
+
+include_directories(SYSTEM 
+  ${OpenCV_INCLUDE_DIRS}
+)
+
 add_executable(split_image src/split_image.cpp)
-target_include_directories(split_image PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>)
-target_compile_features(split_image PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+ament_target_dependencies(split_image
+  rclcpp
+  std_msgs
+  std_srvs
+  sensor_msgs
+  cv_bridge
+  image_transport)
+target_link_libraries(split_image ${OpenCV_LIBRARIES})
 
 install(TARGETS split_image
   DESTINATION lib/${PROJECT_NAME})
