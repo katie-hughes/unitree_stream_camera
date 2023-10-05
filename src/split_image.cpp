@@ -79,12 +79,14 @@ private:
     std_msgs::msg::Header header;
     header.stamp = get_clock()->now();
     // for now camera info still blank
-    sensor_msgs::msg::CameraInfo camera_info_;
-    camera_info_.header = header;
+    sensor_msgs::msg::CameraInfo camera_info_left_;
+    camera_info_left_.header = header;
+    sensor_msgs::msg::CameraInfo camera_info__right;
+    camera_info_right_.header = header;
     const auto msg_left = cv_bridge::CvImage(header, "bgr8", left).toImageMsg();
-    pub_raw_left_->publish(*msg_left, camera_info_);
+    pub_raw_left_->publish(*msg_left, camera_info_left_);
     const auto msg_right = cv_bridge::CvImage(header, "bgr8", right).toImageMsg();
-    pub_raw_right_->publish(*msg_right, camera_info_);
+    pub_raw_right_->publish(*msg_right, camera_info_right_);
   }
 
   void show_img(const std::string name, const cv::Mat img){
