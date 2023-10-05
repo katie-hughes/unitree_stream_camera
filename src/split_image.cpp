@@ -81,7 +81,7 @@ private:
     // for now camera info still blank
     sensor_msgs::msg::CameraInfo camera_info_left_;
     camera_info_left_.header = header;
-    sensor_msgs::msg::CameraInfo camera_info__right;
+    sensor_msgs::msg::CameraInfo camera_info_right_;
     camera_info_right_.header = header;
     const auto msg_left = cv_bridge::CvImage(header, "bgr8", left).toImageMsg();
     pub_raw_left_->publish(*msg_left, camera_info_left_);
