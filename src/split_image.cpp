@@ -84,7 +84,7 @@ private:
     const auto msg_left = cv_bridge::CvImage(header, "bgr8", left).toImageMsg();
     pub_raw_left_->publish(*msg_left, camera_info_);
     const auto msg_right = cv_bridge::CvImage(header, "bgr8", right).toImageMsg();
-    pub_raw_left_->publish(*msg_right, camera_info_);
+    pub_raw_right_->publish(*msg_right, camera_info_);
   }
 
   void show_img(const std::string name, const cv::Mat img){
