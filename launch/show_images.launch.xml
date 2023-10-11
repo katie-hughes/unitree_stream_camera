@@ -1,0 +1,7 @@
+<launch>
+
+	<arg name="camera_location" default="body_left" description="Options: head_front, body_left"/>
+
+	<node pkg='stream_camera' exec='show_images' namespace="$(var camera_location)">
+	</node>
+</launch>

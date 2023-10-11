@@ -19,6 +19,11 @@ public:
     declare_parameter("display_images", false);
     display_images = get_parameter("display_images").as_bool();
     RCLCPP_INFO_STREAM(get_logger(), "Displaying Images: " << display_images);
+
+    // parameters
+    declare_parameter("camera_location", "body_left");
+    camera_location = get_parameter("camera_location").as_string();
+    RCLCPP_INFO_STREAM(get_logger(), "Camera Location: " << camera_location);
     //Subscribers
     sub_raw_ = std::make_shared<image_transport::CameraSubscriber>(
         image_transport::create_camera_subscription(
@@ -34,7 +39,7 @@ public:
     pub_raw_left_ = std::make_shared<image_transport::CameraPublisher>(
         image_transport::create_camera_publisher(
           this,
-          "/left/image_raw",
+          "left/image_raw",
           rclcpp::QoS {10}.get_rmw_qos_profile()
         )
       );
@@ -42,7 +47,7 @@ public:
     pub_raw_right_ = std::make_shared<image_transport::CameraPublisher>(
         image_transport::create_camera_publisher(
           this,
-          "/right/image_raw",
+          "right/image_raw",
           rclcpp::QoS {10}.get_rmw_qos_profile()
         )
       );
@@ -56,6 +61,7 @@ public:
 
 private:
   bool display_images;
+  std::string camera_location;
   std::shared_ptr<image_transport::CameraSubscriber> sub_raw_;
   std::shared_ptr<image_transport::CameraPublisher> pub_raw_left_;
   std::shared_ptr<image_transport::CameraPublisher> pub_raw_right_;
