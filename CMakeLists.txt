@@ -36,7 +36,17 @@ ament_target_dependencies(split_image
   image_transport)
 target_link_libraries(split_image ${OpenCV_LIBRARIES})
 
-install(TARGETS split_image
+add_executable(show_images src/show_images.cpp)
+ament_target_dependencies(show_images
+  rclcpp
+  std_msgs
+  std_srvs
+  sensor_msgs
+  cv_bridge
+  image_transport)
+target_link_libraries(show_images ${OpenCV_LIBRARIES})
+
+install(TARGETS split_image show_images
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
