@@ -1,5 +1,5 @@
 <launch>
-	<node pkg='usb_cam' exec='usb_cam_node_exe'>
+	<node pkg='usb_cam' exec='usb_cam_node_exe' namespace='body_left'>
 		<param name="video_device" value="/dev/video0"/>
 		<param name="image_width" value="1856"/>
 		<param name="image_height" value="800"/>
