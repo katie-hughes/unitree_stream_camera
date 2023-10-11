@@ -1,5 +1,8 @@
 <launch>
-	<node pkg='usb_cam' exec='usb_cam_node_exe' namespace='body_left'>
+
+	<arg name="camera_location" default="body_left" description="Options: head_front, body_left"/>
+
+	<node pkg="usb_cam" exec="usb_cam_node_exe" namespace="$(var camera_location)">
 		<param name="video_device" value="/dev/video0"/>
 		<param name="image_width" value="1856"/>
 		<param name="image_height" value="800"/>
@@ -7,7 +10,7 @@
 		<param name="pixel_format" value="mjpeg2rgb"/>
 	</node>
 
-	<node pkg='stream_camera' exec='split_image'>
+	<node pkg='stream_camera' exec='split_image' namespace="$(var camera_location)">
 		<param name="display_images" value="false"/>
 	</node>
 </launch>
